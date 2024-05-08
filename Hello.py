@@ -1,51 +1,74 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import streamlit as st
-from streamlit.logger import get_logger
+import pandas as pd
 
-LOGGER = get_logger(__name__)
+def check_pattern(row, pattern_range_end, threshold_value, outlier_value, consecutive_count_value):
+    detected_indices = []
+    consecutive_count = 0
+    
+    for i in range(1, pattern_range_end):
+        if row.iloc[i] >= threshold_value:
+            consecutive_count += 1
+            if consecutive_count >= consecutive_count_value:
+                detected_indices.extend(range(i - 1, i + 1))
+                return detected_indices
+        else:
+            consecutive_count = 0
+    
+    for i in range(1, len(row)):
+        if row.iloc[i] >= outlier_value:
+            detected_indices.append(i)
+    
+    return detected_indices
 
+def is_detected(row):
+    for idx in detected_cells[row.name]:
+        if isinstance(idx, int):
+            return True
+        elif len(idx) > 1:
+            return True
+    return False
 
-def run():
-    st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
-    )
+def process_excel(file_path, pattern_range_end, threshold_value, outlier_value, consecutive_count_value):
+    try:
+        df = pd.read_excel(file_path, sheet_name='Sheet1')
+        global detected_cells
+        detected_cells = df.apply(check_pattern, axis=1, pattern_range_end=pattern_range_end, threshold_value=threshold_value, 
+                                  outlier_value=outlier_value, consecutive_count_value=consecutive_count_value)
+        df['Is Detected'] = df.apply(is_detected, axis=1)
+        return df
+    except Exception as e:
+        st.error(e)
+        return None
 
-    st.write("# Welcome to Streamlit! 👋")
-
-    st.sidebar.success("Select a demo above.")
-
-    st.markdown(
-        """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-    """
-    )
+def main():
+    st.title("MedRight Pattern Detector")
+    
+    pattern_range_end = st.number_input("Pattern Range (end):", min_value=1, value=10, step=1)
+    threshold_value = st.number_input("Threshold Value:", min_value=0, value=50, step=1)
+    outlier_value = st.number_input("Outlier Value:", min_value=0, value=100, step=1)
+    consecutive_count_value = st.number_input("Consecutive Count Value:", min_value=2, value=2, step=1)
+    
+    file = st.file_uploader("Upload Excel file", type=["xlsx"])
+    
+    if st.button("Process"):
+        if file is not None:
+            df = process_excel(file, pattern_range_end, threshold_value, outlier_value, consecutive_count_value)
+            if df is not None:
+                st.write(df)
+                
+                # Create a summary chart
+                st.subheader("Summary Chart: Detected vs Not Detected")
+                detected_count = df['Is Detected'].sum()
+                not_detected_count = len(df) - detected_count
+                counts = pd.DataFrame({'Counts': [detected_count, not_detected_count]}, index=['Detected', 'Not Detected'])
+                st.bar_chart(counts)
+    
+    # Citation footer
+    st.write("---")
+    st.write("Made by Business Excellence department")
+    st.write("Manager: Bassant Shereba")
+    st.write("Developer: Dr. Mohamed Magdy")
 
 
 if __name__ == "__main__":
-    run()
+    main()

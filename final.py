@@ -43,7 +43,7 @@ def process_excel(file_path, pattern_range_end, threshold_value, outlier_value, 
 def main():
     st.title("MedRight Pattern Detector")
     
-     pattern_range_end = st.number_input("Months to check:", min_value=1, value=10, step=1 , help= "Enter the Number of months to check ")
+    pattern_range_end = st.number_input("Months to check:", min_value=1, value=10, step=1 , help= "Enter the Number of months to check ")
     threshold_value = st.number_input("Value to check:", min_value=0, value=50, step=1 , help="Enter the value to check in each cell")
     consecutive_count_value = st.number_input("Consecutive Count Value:", min_value=2, value=2, step=1,help="Check the threshold value for how many consecutive months ?")
     outlier_value = st.number_input("Outlier Value:", min_value=0, value=100, step=1 , help="if no pattern check for outlaier of ?")

@@ -41,7 +41,7 @@ def process_excel(file_path, pattern_range_end, threshold_value, outlier_value, 
         return None
 
 def main():
-    st.title("MedRight Pattern Detector")
+    st.title("Pattern Detector")
     
     pattern_range_end = st.number_input("Months to check:", min_value=1, value=10, step=1 , help= "Enter the Number of months to check ")
     threshold_value = st.number_input("Value to check:", min_value=0, value=50, step=1 , help="Enter the value to check in each cell")
@@ -65,10 +65,11 @@ def main():
                 st.bar_chart(counts)
     
     # Citation footer
-    st.write("---")
-    st.write("Made by Business Excellence department")
-    st.write("Manager: Bassant Shereba")
-    st.write("Developer: Dr. Mohamed Magdy")
+    #st.write("---")
+    #st.write("Made by Business Excellence department")
+    #st.write("Manager: Bassant Shereba")
+    #st.write("Developer: Dr. Mohamed Magdy") 
+
 
 
 if __name__ == "__main__":

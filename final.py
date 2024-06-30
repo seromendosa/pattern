@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def check_pattern(row, pattern_range_end, threshold_value, outlier_value, consecutive_count_value):
     detected_indices = []
@@ -48,7 +50,6 @@ def main():
     consecutive_count_value = st.number_input("Consecutive Count Value:", min_value=2, value=2, step=1,help="Check the threshold value for how many consecutive months ?")
     outlier_value = st.number_input("Outlier Value:", min_value=0, value=100, step=1 , help="if no pattern check for outlaier of ?")
     
-    
     file = st.file_uploader("Upload Excel file", type=["xlsx"])
     
     if st.button("Process"):
@@ -63,14 +64,23 @@ def main():
                 not_detected_count = len(df) - detected_count
                 counts = pd.DataFrame({'Counts': [detected_count, not_detected_count]}, index=['Detected', 'Not Detected'])
                 st.bar_chart(counts)
+                
+                # Detailed analysis
+                st.subheader("Detailed Analysis")
+                st.write(df.loc[df['Is Detected'], :])
+                
+                # Visualization of Patterns
+                st.subheader("Pattern Visualization")
+                plt.figure(figsize=(10, 6))
+                sns.heatmap(df.iloc[:, 1:pattern_range_end], annot=True, cmap="YlGnBu")
+                st.pyplot(plt)
+                
+                
     
-    # Citation footer
-    #st.write("---")
-    #st.write("Made by Business Excellence department")
-    #st.write("Manager: Bassant Shereba")
-    #st.write("Developer: Dr. Mohamed Magdy") 
-
-
+    st.write("---")
+    st.write("Made by Business Excellence department")
+    st.write("Manager: Bassant Shereba")
+    st.write("Developer: Dr. Mohamed Magdy")
 
 if __name__ == "__main__":
     main()

@@ -102,7 +102,7 @@ def make_predictions(file_path, model_file):
         return
     
     new_test_data = pd.read_excel(file_path)
-    new_test_features = new_test_data.drop(columns=['Card Number', 'Is Detected'], errors='ignore')
+    new_test_features = new_test_data.drop(columns=['Is Detected'], errors='ignore')
     
     new_predictions = pipeline.predict(new_test_features)
     new_probabilities = pipeline.predict_proba(new_test_features)[:, 1]
@@ -172,19 +172,19 @@ def main():
                     st.subheader("Detailed Analysis")
                     st.write(df.loc[df['Is Detected'], :])
                     
-                    # Visualization of Patterns
-                    st.subheader("Pattern Visualization")
-                    plt.figure(figsize=(10, 6))
-                    sns.heatmap(df.iloc[:, 1:pattern_range_end], annot=True, cmap="YlGnBu")
-                    st.pyplot(plt)
+                    # # Visualization of Patterns
+                    # st.subheader("Pattern Visualization")
+                    # plt.figure(figsize=(10, 6))
+                    # sns.heatmap(df.iloc[:, 1:pattern_range_end], annot=True, cmap="YlGnBu")
+                    # st.pyplot(plt)
                     
-                    # Customizable heatmap
-                    st.subheader("Customizable Heatmap")
-                    cmap = st.selectbox("Select Heatmap Color Palette", sns.color_palette())
-                    annot = st.checkbox("Show Annotations", value=True)
-                    plt.figure(figsize=(10, 6))
-                    sns.heatmap(df.iloc[:, 1:pattern_range_end], annot=annot, cmap=cmap)
-                    st.pyplot(plt)
+                    # # Customizable heatmap
+                    # st.subheader("Customizable Heatmap")
+                    # cmap = st.selectbox("Select Heatmap Color Palette", sns.color_palette())
+                    # annot = st.checkbox("Show Annotations", value=True)
+                    # plt.figure(figsize=(10, 6))
+                    # sns.heatmap(df.iloc[:, 1:pattern_range_end], annot=annot, cmap=cmap)
+                    # st.pyplot(plt)
         
         st.write("---")
         st.write("Made by Business Excellence department")

@@ -5,3 +5,11 @@ pydeck
 streamlit
 matplotlib
 openpyxl
+inspect
+ textwrap
+ streamlit
+ pandas 
+ seaborn 
+ sklearn
+ joblib
+ io
